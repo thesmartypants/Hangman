@@ -10,4 +10,4 @@ class GameState:
         return {"game_id": self.game_id,
                 "current_word": self.current_word,
                 "game_status": self.game_status,
-                "attempts": self.game_status}
+                "attempts": self.attempts}

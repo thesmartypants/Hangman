@@ -1,8 +1,11 @@
 from flask import *
+from flask_cors import CORS
+from json import *
 
 from HangmanGame import HangmanGame
 
 app = Flask(__name__)
+CORS(app)
 app.secret_key = 'any random string'
 
 
@@ -11,35 +14,45 @@ def create_game():
     game = HangmanGame()
     state = game.create_game()
     game_dump = json.dumps(game.__dict__)
-    #session['game '+str(game.game_id)] = game_dump
-    session['game'] = game_dump
-    session.modified = True
-    #return jsonify(state.serialize())
-    return jsonify(json.dumps(state.__dict__))
+
+    # Write game_dump into a file
+    with open('game_data.json', 'w') as file:
+        file.write(game_dump)
+    res = jsonify(json.dumps(state.__dict__))
+
+    res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
 
 
 @app.route('/process_letter/<string:game_id>/<string:letter>', methods=['GET'])
 def process_letter(game_id, letter):
-    #game_dump = session.get('game '+str(game_id))
-    #game_dump = session.get('game')
-    game_dump = session['game']
+    # Get the game from the file
+    with open('game_data.json', 'r') as file:
+        game_dump = file.read()
+
     if game_dump:
         game_dict = json.loads(game_dump)
         game = HangmanGame(**game_dict)
-        processed_letter = game.process_letter(str(letter))
-        return jsonify(processed_letter.serialize())
+
+        new_state = game.process_letter(str(letter))
+
+        # Save the game back to the file
+        game_dump = json.dumps(game.__dict__)
+        with open('game_data.json', 'w') as file:
+            file.write(game_dump)
+
+        return jsonify(new_state.serialize())
     return 'error - game not found'
 
 
 if __name__ == '__main__':
     app.run()
 
-
-# from HangmanGame import HangmanGame
+# from CreateGame import CreateGame
 
 
 # if '__main__' == __name__:
-#    game = HangmanGame()
+#    game = CreateGame()
 #    s = game.create_game()
 #    while s.game_status == 'ongoing':
 #        letter = input('letter: ')

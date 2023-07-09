@@ -4,19 +4,19 @@ from json import JSONEncoder
 from gamestate import GameState
 
 
-def get_word():
-    with open('dictionary.txt', 'r') as file:
-        dictionary = file.read().split(', ')
-    word = random.choice(dictionary)
-    return word
-
-
 class HangmanGame:
-    def __init__(self):
-        self.current_word = ''
-        self.attempts = 0
-        self.game_id = 0
-        self.letter = ''
+
+    def __init__(self, current_word='', attempts=0, game_id=0, word=''):
+        self.current_word = current_word
+        self.attempts = attempts
+        self.game_id = game_id
+        self.word = word
+
+    def get_word(self):
+        with open('dictionary.txt', 'r') as file:
+            dictionary = file.read().split(', ')
+        new_word = random.choice(dictionary)
+        return new_word
 
     def get_game_satus(self):
         if self.word == self.current_word:
@@ -29,7 +29,7 @@ class HangmanGame:
     # API method
     def create_game(self):
 
-        self.word = get_word()
+        self.word = self.get_word()
         print(len(self.word) * '_')
         self.current_word = '_' * len(self.word)
         self.attempts = 6

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hangman Game</title>
+    <style>
+    body{
+        background-image: url("Ongoing.gif");
+    }
+    </style>
+</head>
+
+<body>
+
+
+    <button type='button' onclick='create_game()'>New Game</button>
+    <p></p>
+    <h1 id="currentWordLabel"></h1>
+    <p></p>
+    <label id="attemptsLabel"></label>
+    <p></p>
+    <label id="gameIdLabel"></label>
+    <p></p>
+    <label id="gameStatusLabel"></label>
+    <p></p>
+    <script>
+        function create_game() {
+            fetch('http://localhost:5000/create_game')
+                .then(response => response.json())
+                .then(data => {
+                    const jsn = JSON.parse(data);
+                    document.getElementById("currentWordLabel").textContent = "Current Word: " + jsn.current_word;
+                    document.getElementById("attemptsLabel").textContent = "Attempts: " + jsn.attempts;
+                    document.getElementById("gameIdLabel").textContent = "Game ID: " + jsn.game_id;
+                    document.getElementById("gameStatusLabel").textContent = "Game Status: " + jsn.game_status;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+    <input type="text" id="letter" placeholder="Enter letter here: ">
+    <button id="submit" onclick="submit()">Submit</button>
+    <script>
+        function submit() {
+            var letter = document.getElementById("letter").value;
+            var id = document.getElementById("gameIdLabel").textContent;
+
+            fetch('http://localhost:5000/process_letter/' + id + '/' + letter)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("currentWordLabel").textContent = "Current Word: " + data.current_word;
+                    document.getElementById("attemptsLabel").textContent = "Attempts: " + data.attempts;
+                    document.getElementById("gameStatusLabel").textContent = "Game Status: " + data.game_status;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+    </script>
+</body>
+</html>
