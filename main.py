@@ -1,11 +1,9 @@
 from flask import *
-from flask_cors import CORS
 from json import *
 
 from HangmanGame import HangmanGame
 
 app = Flask(__name__)
-CORS(app)
 app.secret_key = 'any random string'
 
 
