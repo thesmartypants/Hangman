@@ -30,7 +30,6 @@ class HangmanGame:
     def create_game(self):
 
         self.word = self.get_word()
-        print(len(self.word) * '_')
         self.current_word = '_' * len(self.word)
         self.attempts = 6
         self.game_id += 1
@@ -54,7 +53,6 @@ class HangmanGame:
 
         if letter in self.word:
             self.current_word = self.set_letter(letter)
-            print(self.current_word)
         else:
             self.attempts -= 1
 

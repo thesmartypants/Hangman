@@ -1,11 +1,14 @@
 from flask import *
 from json import *
+from flask_cors import CORS
+
 
 from HangmanGame import HangmanGame
 
 app = Flask(__name__)
 app.secret_key = 'any random string'
 
+CORS(app)
 
 @app.route('/create_game', methods=['GET'])
 def create_game():
@@ -41,6 +44,7 @@ def process_letter(game_id, letter):
 
         return jsonify(new_state.serialize())
     return 'error - game not found'
+
 
 
 if __name__ == '__main__':
