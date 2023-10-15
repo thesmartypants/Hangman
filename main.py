@@ -2,24 +2,21 @@ from flask import *
 from json import *
 from flask_cors import CORS
 
-
+import settings
 from HangmanGame import HangmanGame
 
 app = Flask(__name__)
 app.secret_key = 'any random string'
-
+settings = settings.Settings()
 CORS(app)
 
-@app.route('/create_game', methods=['GET'])
-def create_game():
-    game = HangmanGame()
-    state = game.create_game()
-    game_dump = json.dumps(game.__dict__)
+@app.route('/create_game/{username}', methods=['POST'])
+def create_game(username: str):
+    game = HangmanGame(settings)
+    state = game.create_game(username)
 
-    # Write game_dump into a file
-    with open('game_data.json', 'w') as file:
-        file.write(game_dump)
-    res = jsonify(json.dumps(state.__dict__))
+
+
 
     res.headers.add('Access-Control-Allow-Origin', '*')
     return res
